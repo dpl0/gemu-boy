@@ -1,0 +1,11 @@
+[package]
+name = "gemub"
+version = "0.1.0"
+authors = ["dpl <tuchalia@gmail.com>"]
+
+[dependencies]
+# For future use!
+# gtk = "0.0.6"
+# glium = "0.13.4"
+# ao = "0.6.1"
+
