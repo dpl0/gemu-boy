@@ -1,6 +1,4 @@
-mod cartridge;
-mod cpu;
-mod memory;
+mod gameboy;
 
 use std::env;
 
@@ -16,8 +14,6 @@ use std::env;
 fn main() {
     let rom_name = env::args().nth(1).unwrap();
 
-    let game = cartridge::Cartridge::new(rom_name);
-    let mem = memory::build_memory(&game);
-    // let cpu = cpu::Cpu;
-    // println("{:?}", cpu);
+    let gameboy = gameboy::GameBoy::new(&rom_name);
+    println!("{:#?}", gameboy.cpu.regs);
 }

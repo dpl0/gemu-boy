@@ -1,6 +1,10 @@
 /*
+ * The Bus will hold the needed stuff from the system.
+ */
+
+/*
  * General memory map:
- *
+ * 
  * Interrupt Enable Register
  * --------------------------- 0xFFFF
  * Internal RAM
@@ -26,16 +30,33 @@
  * 16kB ROM bank #0                     |
  * --------------------------- 0x0000 --
  * NOTE: b = bit, B = byte
- *
- *
+ * 
+ * 
  * Writing at E000-FE00 writes at C000-DE00
  * Writing at C000-DE00 writes at C000-DE00
+ * 
  */
 
-// CORRECT Memory should be filled with random data (except cartridge).
-struct Memory {
-   a:u32,
+
+use std::fs::File;
+use std::io::Read;
+
+
+#[derive(Default, Debug)]
+pub struct Bus {
+    ram: Vec<u8>,
+    // ...
 }
 
-pub fn build_memory(C: &Cartridge) -> Memory {
+impl Bus {
+    pub fn new(rom_name: &String) -> Bus {
+        let ram = vec![0; 64 * 1024];
+
+        let mut file = File::open(&rom_name).unwrap();
+        let mut buf: Vec<u8> = Vec::new();
+        file.read_to_end(&mut buf).unwrap();
+        let buf = buf; // Shadow into an inmutable Copy.
+        Bus { ram: ram }
+    }
 }
+
