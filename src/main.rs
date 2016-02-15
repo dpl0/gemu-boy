@@ -15,5 +15,5 @@ fn main() {
     let rom_name = env::args().nth(1).unwrap();
 
     let gameboy = gameboy::GameBoy::new(&rom_name);
-    println!("{:#?}", gameboy.cpu.regs);
+    println!("{:#?}", gameboy);
 }

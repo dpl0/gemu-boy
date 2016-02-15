@@ -38,11 +38,12 @@
  */
 
 
+use std::fmt;
 use std::fs::File;
 use std::io::Read;
 
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct Bus {
     ram: Vec<u8>,
     // ...
@@ -60,3 +61,8 @@ impl Bus {
     }
 }
 
+impl fmt::Debug for Bus {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Bus")
+    }
+}
