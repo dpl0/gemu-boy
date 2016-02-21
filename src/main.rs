@@ -14,6 +14,6 @@ use std::env;
 fn main() {
     let rom_name = env::args().nth(1).unwrap();
 
-    let gameboy = gameboy::GameBoy::new(&rom_name);
+    let gameboy = Box::new(gameboy::GameBoy::new(&rom_name));
     println!("{:#?}", gameboy);
 }

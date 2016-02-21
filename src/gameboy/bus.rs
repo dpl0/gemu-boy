@@ -45,13 +45,13 @@ use std::io::Read;
 
 #[derive(Default)]
 pub struct Bus {
-    ram: Vec<u8>,
+    ram: Box<Vec<u8>>, // Store memory in heap.
     // ...
 }
 
 impl Bus {
     pub fn new(rom_name: &String) -> Bus {
-        let ram = vec![0; 64 * 1024];
+        let ram = Box::new(vec![0; 64 * 1024]);
 
         let mut file = File::open(&rom_name).unwrap();
         let mut buf: Vec<u8> = Vec::new();
