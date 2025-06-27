@@ -1,11 +1,14 @@
 [package]
 name = "gemub"
 version = "0.1.0"
-authors = ["dpl <tuchalia@gmail.com>"]
+authors = ["dpl"]
+edition = "2021"
 
 [dependencies]
 # For future use!
 # gtk = "0.0.6"
 # glium = "0.13.4"
 # ao = "0.6.1"
+camino = "1.1.10"
+anyhow = "1.0.98"
 

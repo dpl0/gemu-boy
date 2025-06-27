@@ -2,20 +2,28 @@
  * The GameBoy will be implemented in this module.
  */
 
-mod cpu;
-mod bus;
-mod sound;
+use camino::Utf8PathBuf;
 
-#[derive (Default, Debug)]
+mod cpu;
+mod ram;
+mod rom;
+mod screen;
+
+#[derive(Debug)]
 pub struct GameBoy {
     pub cpu: cpu::Cpu,
+    pub ram: ram::Memory,
+    pub screen: screen::Screen,
 }
 
 impl GameBoy {
-    pub fn new(rom_name: &String) -> GameBoy {
-        GameBoy {
-            cpu: cpu::Cpu::new(rom_name),
-        }
+    pub fn new(rom_name: Utf8PathBuf) -> anyhow::Result<GameBoy> {
+        let rom = rom::Rom::new(rom_name)?;
+
+        Ok(GameBoy {
+            cpu: cpu::Cpu::new(),
+            ram: ram::Memory::new_with_rom(rom),
+            screen: screen::Screen::new(),
+        })
     }
 }
-
