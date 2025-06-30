@@ -1,4 +1,5 @@
-# gemub
+# Gemu-Boy
+Yet another emulator for Game Boy, written in Rust.
 
 ## Some Resources: 
 * https://github.com/retrio/gb-test-roms

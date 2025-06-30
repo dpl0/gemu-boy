@@ -1,5 +1,5 @@
 [package]
-name = "gemub"
+name = "gemu-boy"
 version = "0.1.0"
 authors = ["dpl"]
 edition = "2021"

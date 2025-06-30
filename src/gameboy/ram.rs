@@ -1,5 +1,5 @@
 
-/// This module implements the memory for GemuB.
+/// This module implements the memory for Gemu-Boy.
 ///
 /// The Game Boy has a 16-bit address bus, which is used to address ROM, RAM, and I/O.
 ///
