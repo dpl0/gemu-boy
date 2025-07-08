@@ -1,7 +1,4 @@
-/*
- * The GameBoy will be implemented in this module.
- */
-
+/// This module contains the main GameBoy emulator structure and its components.
 use camino::Utf8PathBuf;
 
 mod cpu;
@@ -9,6 +6,7 @@ mod ram;
 mod rom;
 mod screen;
 
+/// The main GameBoy structure that holds everything needed to run the emulator.
 #[derive(Debug)]
 pub struct GameBoy {
     pub cpu: cpu::Cpu,
@@ -19,6 +17,7 @@ pub struct GameBoy {
 impl GameBoy {
     pub fn new(rom_name: Utf8PathBuf) -> anyhow::Result<GameBoy> {
         let rom = rom::Rom::new(rom_name)?;
+    /// Creates a new instance of the GameBoy emulator with the given ROM file path.
 
         Ok(GameBoy {
             cpu: cpu::Cpu::new(),

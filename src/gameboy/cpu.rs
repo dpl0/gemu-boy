@@ -4,17 +4,18 @@
 /// These are actually the higher bits of the AF register!
 #[derive(Default, Debug)]
 pub struct Flags {
-    // Zero, Non-Zero (set when the result of a math op is zero, or two values are the same after CP.
+    /// Zero, Non-Zero (set when the result of a math op is zero, or two values are the same after CP.
     z: bool,
-    // Set if the last math OP was a subtraction.
+    /// Set if the last math OP was a subtraction.
     n: bool,
     /// Half-Carry, set if a carry occurred from the lower nibble in the last math op.
     h: bool,
-    // Carry Flag, set if a carry occurred from the last math op, or if reg A is smaller when executing CP.
+    /// Carry Flag, set if a carry occurred from the last math op, or if reg A is smaller when executing CP.
     c: bool,
 }
 
 #[derive(Debug)]
+/// Contains all the registers of the CPU.
 pub struct RegisterFile {
     // General purpose registers.
     a: u8,
