@@ -2,6 +2,7 @@
 use camino::Utf8PathBuf;
 
 mod cpu;
+mod decoder;
 mod ram;
 mod rom;
 mod screen;
@@ -26,5 +27,24 @@ impl GameBoy {
             ram: ram::Memory::new_with_rom(rom),
             screen: screen::Screen::new(),
         })
+    }
+
+    /// Initialize the needed stuff for the GB.
+    pub(crate) fn initialize(&self) -> anyhow::Result<()> {
+        todo!()
+    }
+
+    /// Runs the GameBoy, starts the CPU and begins executing instructions.
+    pub(crate) fn run(&mut self) -> anyhow::Result<()> {
+        loop {
+            // The CPU will take care of everything, like fetching instruction, decoding, and
+            // executing.
+            self.cpu.tick(&mut self.ram)?;
+
+            // Update the screen with the current state of the RAM.
+            self.screen.update(&self.ram)?;
+
+            // TODO: Handle input, timing, and break condition if needed.
+        }
     }
 }

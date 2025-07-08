@@ -16,6 +16,8 @@ fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     let mut gameboy = gameboy::GameBoy::new(args.rom_name)?;
+    gameboy.initialize()?;
+    println!("GameBoy initialized with ROM: {}", gameboy.rom_name);
     gameboy.run()?;
 
     Ok(())
