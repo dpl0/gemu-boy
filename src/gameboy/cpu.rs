@@ -16,13 +16,19 @@ pub struct Flags {
 
 #[derive(Debug)]
 pub struct RegisterFile {
-    af: u16,
-    bc: u16,
-    de: u16,
-    hl: u16,
+    // General purpose registers.
+    a: u8,
+    f: Flags,
+    b: u8,
+    c: u8,
+    d: u8,
+    e: u8,
+    h: u8,
+    l: u8,
+    /// Stack pointer register.
     sp: u16,
+    /// Program counter register.
     pc: u16,
-    flags: Flags,
 }
 
 impl RegisterFile {
@@ -35,16 +41,16 @@ impl RegisterFile {
 impl Default for RegisterFile {
     fn default() -> RegisterFile {
         RegisterFile {
-            af: 0,
-            bc: 0,
-            de: 0,
-            hl: 0,
+            a: 0,
+            f: Flags::default(),
+            b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            h: 0,
+            l: 0,
             sp: 0xfffe,
             pc: 0x100,
-            // The flags are set to default, which is all false.
-            // Note: The flags are the higher nibble of the AF register, so they are not stored in
-            // the tuple.
-            flags: Flags::default(),
         }
     }
 }
