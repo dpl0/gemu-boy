@@ -1,3 +1,5 @@
+use crate::gameboy::ram::Memory;
+
 const PIXELS: usize = 160 * 144;
 
 #[derive(Default, Debug)]
@@ -12,5 +14,13 @@ impl Screen {
         Self {
             pixels: vec![0; PIXELS],
         }
+    }
+
+    pub fn update(&mut self, _ram: &Memory) -> anyhow::Result<()> {
+        // For now, we just fill the screen with a solid color for testing.
+        for pixel in self.pixels.iter_mut() {
+            *pixel = 0xFF; // White color
+        }
+        Ok(())
     }
 }
