@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 mod gameboy;
 
 use camino::Utf8PathBuf;
