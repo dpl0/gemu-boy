@@ -1,15 +1,24 @@
+#![allow(dead_code)]
+
 mod gameboy;
 
 use camino::Utf8PathBuf;
-use std::env;
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Path the ROM file to load.
+    rom_name: Utf8PathBuf,
+}
 
 fn main() -> anyhow::Result<()> {
-    // TODO: Start using clap
-    let rom_name = env::args().nth(1).unwrap();
-    let rom_name: Utf8PathBuf = rom_name.into();
+    let args = Args::parse();
 
-    let gameboy = gameboy::GameBoy::new(rom_name)?;
-    println!("{gameboy:#?}");
+    let mut gameboy = gameboy::GameBoy::new(args.rom_name)?;
+    gameboy.initialize()?;
+    println!("GameBoy initialized with ROM: {}", gameboy.rom_name);
+    gameboy.run()?;
 
     Ok(())
 }

@@ -15,7 +15,7 @@ pub(crate) struct Rom {
 
 impl Rom {
     /// Creates a Rom struct with the passed path.
-    pub fn new(rom_path: Utf8PathBuf) -> anyhow::Result<Self> {
+    pub fn new(rom_path: &Utf8PathBuf) -> anyhow::Result<Self> {
         let mut buf: [u8; MAX_GAME_SIZE] = [0; MAX_GAME_SIZE];
 
         let mut file = File::open(&rom_path)?;
