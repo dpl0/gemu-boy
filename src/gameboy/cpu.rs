@@ -1,28 +1,37 @@
 //! Definition of the registers of the CPU.
 
+use crate::gameboy::{decoder, ram::Memory};
+
 /// Represents all flags as they'll be set by executing operations from the cpu.
 /// These are actually the higher bits of the AF register!
 #[derive(Default, Debug)]
 pub struct Flags {
-    // Zero, Non-Zero (set when the result of a math op is zero, or two values are the same after CP.
+    /// Zero, Non-Zero (set when the result of a math op is zero, or two values are the same after CP.
     z: bool,
-    // Set if the last math OP was a subtraction.
+    /// Set if the last math OP was a subtraction.
     n: bool,
     /// Half-Carry, set if a carry occurred from the lower nibble in the last math op.
     h: bool,
-    // Carry Flag, set if a carry occurred from the last math op, or if reg A is smaller when executing CP.
+    /// Carry Flag, set if a carry occurred from the last math op, or if reg A is smaller when executing CP.
     c: bool,
 }
 
 #[derive(Debug)]
+/// Contains all the registers of the CPU.
 pub struct RegisterFile {
-    af: u16,
-    bc: u16,
-    de: u16,
-    hl: u16,
+    // General purpose registers.
+    a: u8,
+    f: Flags,
+    b: u8,
+    c: u8,
+    d: u8,
+    e: u8,
+    h: u8,
+    l: u8,
+    /// Stack pointer register.
     sp: u16,
+    /// Program counter register.
     pc: u16,
-    flags: Flags,
 }
 
 impl RegisterFile {
@@ -35,16 +44,16 @@ impl RegisterFile {
 impl Default for RegisterFile {
     fn default() -> RegisterFile {
         RegisterFile {
-            af: 0,
-            bc: 0,
-            de: 0,
-            hl: 0,
+            a: 0,
+            f: Flags::default(),
+            b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            h: 0,
+            l: 0,
             sp: 0xfffe,
             pc: 0x100,
-            // The flags are set to default, which is all false.
-            // Note: The flags are the higher nibble of the AF register, so they are not stored in
-            // the tuple.
-            flags: Flags::default(),
         }
     }
 }
@@ -52,10 +61,27 @@ impl Default for RegisterFile {
 #[derive(Default, Debug)]
 pub struct Cpu {
     pub registers: RegisterFile,
+    pub decoder: decoder::Decoder,
 }
 
 impl Cpu {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn tick(&mut self, ram: &mut Memory) -> anyhow::Result<()> {
+        let instruction = self.decoder.fetch_instruction(ram, self.registers.pc)?;
+
+        // Increment the program counter
+        self.registers.pc = self.registers.pc.wrapping_add(instruction.size as u16);
+
+
+        // For now, just print the instruction for debugging purposes.
+        println!("Executing: {:?}", &instruction);
+
+        // Execute instruction
+        // instruction.execute(ram)?;
+
+        Ok(())
     }
 }

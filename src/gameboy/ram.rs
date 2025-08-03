@@ -69,7 +69,7 @@ impl Memory {
     }
 
     /// Reads a byte from the memory at the specified location.
-    pub fn read(&self, location: u16) -> u8 {
+    pub fn read_byte(&self, location: u16) -> u8 {
         self.ram[self.physical_address(location)]
     }
 
