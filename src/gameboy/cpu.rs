@@ -1,6 +1,6 @@
 //! Definition of the registers of the CPU.
 
-use crate::gameboy::{decoder, ram::Memory};
+use super::{decoder, ram::Memory};
 
 /// Represents all flags as they'll be set by executing operations from the cpu.
 /// These are actually the higher bits of the AF register!
@@ -73,8 +73,16 @@ impl Cpu {
         let instruction = self.decoder.fetch_instruction(ram, self.registers.pc)?;
 
         // Increment the program counter
-        self.registers.pc = self.registers.pc.wrapping_add(instruction.size as u16);
+        let (pc_incremented, overflow) = self.registers.pc.overflowing_add(instruction.size as u16);
 
+        if overflow {
+            log::warn!(
+                "Program counter overflowed at PC: {:#04x}",
+                self.registers.pc
+            );
+        }
+
+        self.registers.pc = pc_incremented;
 
         // For now, just print the instruction for debugging purposes.
         println!("Executing: {:?}", &instruction);
