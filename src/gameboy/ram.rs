@@ -1,4 +1,3 @@
-
 /// This module implements the memory for Gemu-Boy.
 ///
 /// The Game Boy has a 16-bit address bus, which is used to address ROM, RAM, and I/O.
@@ -177,7 +176,7 @@ mod tests {
     fn test_read_non_mirroring() {
         let mut memory = Memory::new();
         memory.ram[0x0000] = 42; // Set a value to read
-        let byte = memory.read(0x0000);
+        let byte = memory.read_byte(0x0000);
         assert_eq!(byte, 42);
 
         let byte = memory[MEMORY_SIZE - 1];
@@ -303,4 +302,3 @@ mod tests {
         assert_eq!(memory.ram[0xE000], 0x00); // Should not affect 0xE000
     }
 }
-

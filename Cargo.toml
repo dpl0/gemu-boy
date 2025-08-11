@@ -5,11 +5,9 @@ authors = ["dpl"]
 edition = "2021"
 
 [dependencies]
-# For future use!
-# gtk = "0.0.6"
-# glium = "0.13.4"
-# ao = "0.6.1"
-camino = "1.1.10"
 anyhow = "1.0.98"
-clap = { version = "4.5.42", features = ["derive"] }
-
+bitmatch = "0.1.1"
+camino = "1.1.11"
+clap = { version = "4.5.43", features = ["derive"] }
+env_logger = "0.11.8"
+log = "0.4.27"
