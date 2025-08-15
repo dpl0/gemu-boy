@@ -1,3 +1,5 @@
+#![allow(clippy::module_inception)]
+
 //! Decoder for the Gameboy opcodes.
 //!
 //! The decoder will only decode the opcode and its operands if any into an `Instruction` struct.

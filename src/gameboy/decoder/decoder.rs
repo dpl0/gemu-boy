@@ -13,7 +13,7 @@ pub struct Decoder;
 
 impl Decoder {
     /// Creates a new instance of the Decoder.
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 
@@ -28,14 +28,16 @@ impl Decoder {
         let third_byte = ram.read_byte(pc + 2);
         let bytes = [first_byte, second_byte, third_byte];
 
-        self.decode(&bytes)
+        self.decode(bytes)
     }
 
     /// Decodes the given bytes into an `Instruction`.
     /// This method expects a slice of 3 bytes, which is the maximum size of an instruction in the
     /// Gameboy CPU.
+    // This `allow` config is to avoid the clippy warning for the generate code from `bitmatch`
+    #[allow(clippy::verbose_bit_mask)]
     #[bitmatch]
-    pub fn decode(&self, bytes: &[u8; 3]) -> anyhow::Result<Instruction> {
+    pub fn decode(&self, bytes: [u8; 3]) -> anyhow::Result<Instruction> {
         #[bitmatch]
         match bytes[0] {
             // This decoding is based on the official Game Boy manual by Nintendo, following the
