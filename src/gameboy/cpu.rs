@@ -4,7 +4,9 @@ use super::{decoder, ram::Memory};
 
 /// Represents all flags as they'll be set by executing operations from the cpu.
 /// These are actually the higher bits of the AF register!
+// Allowing excessive bools because the flags are well represented as booleans.
 #[derive(Default, Debug)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct Flags {
     /// Zero, Non-Zero (set when the result of a math op is zero, or two values are the same after CP.
     z: bool,
@@ -35,15 +37,15 @@ pub struct RegisterFile {
 }
 
 impl RegisterFile {
-    fn new() -> RegisterFile {
-        RegisterFile::default()
+    fn new() -> Self {
+        Self::default()
     }
 }
 
 // Start as after power-on at instantiation.
 impl Default for RegisterFile {
-    fn default() -> RegisterFile {
-        RegisterFile {
+    fn default() -> Self {
+        Self {
             a: 0,
             f: Flags::default(),
             b: 0,
@@ -69,11 +71,14 @@ impl Cpu {
         Self::default()
     }
 
-    pub fn tick(&mut self, ram: &mut Memory) -> anyhow::Result<()> {
+    pub fn tick(&mut self, ram: &Memory) -> anyhow::Result<()> {
         let instruction = self.decoder.fetch_instruction(ram, self.registers.pc)?;
 
         // Increment the program counter
-        let (pc_incremented, overflow) = self.registers.pc.overflowing_add(instruction.size as u16);
+        let (pc_incremented, overflow) = self
+            .registers
+            .pc
+            .overflowing_add(u16::from(instruction.size));
 
         if overflow {
             log::warn!(

@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+#![deny(warnings)]
+#![warn(clippy::pedantic, clippy::nursery)]
 
 mod gameboy;
 

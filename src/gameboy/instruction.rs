@@ -27,7 +27,7 @@ pub enum Mnemonic {
     Ld8,
 }
 
-/// Transform a 'Z N H C' string into a FlagEffects struct.
+/// Transform a 'Z N H C' string into a [`FlagEffects`] struct.
 /// The input uses a legend for each flag:
 ///  - '1': Set
 ///  - '0': Clear
@@ -45,7 +45,7 @@ macro_rules! flag_effects {
     };
 }
 
-/// Transform a single flag effect into a FlagEffect enum.
+/// Transform a single flag effect into a [`FlagEffect`] enum.
 #[macro_export]
 macro_rules! flag_effect {
     (1) => {

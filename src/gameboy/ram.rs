@@ -32,20 +32,20 @@ pub const MIRRORING_RANGE: std::ops::RangeInclusive<usize> = 0xE000..=0xFDFF;
 pub const MIRRORING_OFFSET: usize = 0xE000 - 0xC000;
 
 /// Represents the whole memory space of the Game Boy.
-pub(crate) struct Memory {
-    ram: [u8; MEMORY_SIZE],
+pub struct Memory {
+    ram: Box<[u8]>,
 }
 
 impl Memory {
     /// Creates a new instance of Memory with all bytes initialized to zero.
-    pub fn new() -> Memory {
+    pub fn new() -> Self {
         Self {
-            ram: [0; MEMORY_SIZE],
+            ram: vec![0; MEMORY_SIZE].into_boxed_slice(),
         }
     }
 
     /// Creates memory and load given rom.
-    pub fn new_with_rom(rom: Rom) -> Memory {
+    pub fn new_with_rom(rom: &Rom) -> Self {
         const START_ROM_BANK: u16 = 0x0000;
 
         let mut memory = Self::new();
@@ -58,7 +58,7 @@ impl Memory {
     }
 
     /// Helper method to calculate the memory location considering mirroring addresses.
-    fn physical_address(&self, location: u16) -> usize {
+    fn physical_address(location: u16) -> usize {
         // Accesses to E000-FDFF go to C000-DDFF.
         if MIRRORING_RANGE.contains(&(location as usize)) {
             location as usize - MIRRORING_OFFSET
@@ -69,7 +69,7 @@ impl Memory {
 
     /// Reads a byte from the memory at the specified location.
     pub fn read_byte(&self, location: u16) -> u8 {
-        self.ram[self.physical_address(location)]
+        self.ram[Self::physical_address(location)]
     }
 
     /// Writes a slice of data to the memory at the specified location.
@@ -87,7 +87,11 @@ impl Memory {
         // Accesses to E000-FDFF go to C000-DDFF.
         // Writing exclusively in the mirroring range.
         if MIRRORING_RANGE.contains(&location) && MIRRORING_RANGE.contains(&end) {
-            return Self::write_slice(self, (location - MIRRORING_OFFSET) as u16, data);
+            return Self::write_slice(
+                self,
+                u16::try_from(location - MIRRORING_OFFSET).expect("value should be in u16 range"),
+                data,
+            );
         }
 
         // Writing partially in the mirroring range is not supported.
@@ -104,16 +108,16 @@ impl Memory {
     ///
     /// Accesses to E000-FDFF go to C000-DDFF.
     pub fn write_byte(&mut self, location: u16, byte: u8) {
-        self.ram[self.physical_address(location)] = byte;
+        self.ram[Self::physical_address(location)] = byte;
     }
 
     /// Reads directly from the memory, bypassing mirrorring logic.
-    pub fn read_raw(&self, location: u16) -> u8 {
+    pub const fn read_raw(&self, location: u16) -> u8 {
         self.ram[location as usize]
     }
 
     /// Writes byte directly from the memory, bypassing mirrorring logic.
-    pub fn write_byte_raw(&mut self, location: u16, byte: u8) {
+    pub const fn write_byte_raw(&mut self, location: u16, byte: u8) {
         self.ram[location as usize] = byte;
     }
 }
@@ -130,12 +134,11 @@ impl std::ops::Index<usize> for Memory {
     type Output = u8;
 
     fn index(&self, index: usize) -> &Self::Output {
-        if index >= MEMORY_SIZE {
-            panic!("Index out of bounds");
-        }
+        assert!(index < MEMORY_SIZE, "Index out of bounds");
 
         // Accesses to E000-FDFF go to C000-DDFF.
-        &self.ram[self.physical_address(index as u16)]
+        &self.ram
+            [Self::physical_address(u16::try_from(index).expect("index should be in u16 range"))]
     }
 }
 
@@ -143,12 +146,11 @@ impl std::ops::Index<usize> for Memory {
 /// This will panic if the index is out of bounds.
 impl std::ops::IndexMut<usize> for Memory {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        if index >= MEMORY_SIZE {
-            panic!("Index out of bounds");
-        }
+        assert!(index < MEMORY_SIZE, "Index out of bounds");
 
         // Accesses to E000-FDFF go to C000-DDFF.
-        &mut self.ram[self.physical_address(index as u16)]
+        &mut self.ram
+            [Self::physical_address(u16::try_from(index).expect("index should be in u16 range"))]
     }
 }
 
@@ -162,8 +164,8 @@ pub enum MemAccessError {
 impl fmt::Display for MemAccessError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            MemAccessError::SliceEndOutOfBounds => write!(f, "Slice end exceeds addressable space"),
-            MemAccessError::SliceInMirroringRange => {
+            Self::SliceEndOutOfBounds => write!(f, "Slice end exceeds addressable space"),
+            Self::SliceInMirroringRange => {
                 write!(f, "Slice overlaps with mirroring range")
             }
         }
@@ -234,7 +236,9 @@ mod tests {
         let mut mem = Memory::new();
         let data = [1, 2, 3, 4];
         let start = MEMORY_SIZE - 2;
-        let written = mem.write_slice(start as u16, &data).unwrap();
+        let written = mem
+            .write_slice(u16::try_from(start).unwrap(), &data)
+            .unwrap();
         assert_eq!(written, 2);
         assert_eq!(&mem.ram[start..MEMORY_SIZE], &data[..2]);
     }

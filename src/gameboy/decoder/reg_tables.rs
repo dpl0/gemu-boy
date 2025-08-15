@@ -9,7 +9,7 @@
 ///
 /// The description actually has a missing value, which is the  [`IndirectHL`] register. This register is actually used to refer to the memory address pointed by the HL register, not the register itself.
 #[repr(u8)]
-pub(crate) enum R {
+pub enum R {
     B = 0b000,
     C = 0b001,
     D = 0b010,
@@ -21,23 +21,23 @@ pub(crate) enum R {
 }
 
 impl R {
-    pub fn from_u8(value: u8) -> Option<Self> {
+    pub const fn from_u8(value: u8) -> Option<Self> {
         match value {
-            0b000 => Some(R::B),
-            0b001 => Some(R::C),
-            0b010 => Some(R::D),
-            0b011 => Some(R::E),
-            0b100 => Some(R::H),
-            0b101 => Some(R::L),
-            0b110 => Some(R::IndirectHL),
-            0b111 => Some(R::A),
+            0b000 => Some(Self::B),
+            0b001 => Some(Self::C),
+            0b010 => Some(Self::D),
+            0b011 => Some(Self::E),
+            0b100 => Some(Self::H),
+            0b101 => Some(Self::L),
+            0b110 => Some(Self::IndirectHL),
+            0b111 => Some(Self::A),
             _ => None,
         }
     }
 }
 
 #[repr(u8)]
-pub(crate) enum DD {
+pub enum DD {
     BC = 0b00,
     DE = 0b01,
     HL = 0b10,
@@ -45,19 +45,19 @@ pub(crate) enum DD {
 }
 
 impl DD {
-    pub fn from_u8(value: u8) -> Option<Self> {
+    pub const fn from_u8(value: u8) -> Option<Self> {
         match value {
-            0b00 => Some(DD::BC),
-            0b01 => Some(DD::DE),
-            0b10 => Some(DD::HL),
-            0b11 => Some(DD::SP),
+            0b00 => Some(Self::BC),
+            0b01 => Some(Self::DE),
+            0b10 => Some(Self::HL),
+            0b11 => Some(Self::SP),
             _ => None,
         }
     }
 }
 
 #[repr(u8)]
-pub(crate) enum QQ {
+pub enum QQ {
     BC = 0b00,
     DE = 0b01,
     HL = 0b10,
@@ -65,19 +65,19 @@ pub(crate) enum QQ {
 }
 
 impl QQ {
-    pub fn from_u8(value: u8) -> Option<Self> {
+    pub const fn from_u8(value: u8) -> Option<Self> {
         match value {
-            0b00 => Some(QQ::BC),
-            0b01 => Some(QQ::DE),
-            0b10 => Some(QQ::HL),
-            0b11 => Some(QQ::AF),
+            0b00 => Some(Self::BC),
+            0b01 => Some(Self::DE),
+            0b10 => Some(Self::HL),
+            0b11 => Some(Self::AF),
             _ => None,
         }
     }
 }
 
 #[repr(u8)]
-pub(crate) enum SS {
+pub enum SS {
     BC = 0b00,
     DE = 0b01,
     HL = 0b10,
@@ -85,12 +85,12 @@ pub(crate) enum SS {
 }
 
 impl SS {
-    pub fn from_u8(value: u8) -> Option<Self> {
+    pub const fn from_u8(value: u8) -> Option<Self> {
         match value {
-            0b00 => Some(SS::BC),
-            0b01 => Some(SS::DE),
-            0b10 => Some(SS::HL),
-            0b11 => Some(SS::SP),
+            0b00 => Some(Self::BC),
+            0b01 => Some(Self::DE),
+            0b10 => Some(Self::HL),
+            0b11 => Some(Self::SP),
             _ => None,
         }
     }

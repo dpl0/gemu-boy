@@ -16,11 +16,10 @@ impl Screen {
         }
     }
 
-    pub fn update(&mut self, _ram: &Memory) -> anyhow::Result<()> {
+    pub fn update(&mut self, _ram: &Memory) {
         // For now, we just fill the screen with a solid color for testing.
-        for pixel in self.pixels.iter_mut() {
+        for pixel in &mut self.pixels {
             *pixel = 0xFF; // White color
         }
-        Ok(())
     }
 }
