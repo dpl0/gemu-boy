@@ -3,7 +3,7 @@
 use bitmatch::bitmatch;
 
 use super::super::instruction::{FlagEffect, FlagEffects, Instruction, Mnemonic};
-use super::operand::{Operand, Reg16, Reg8};
+use super::operand::{Operand, Reg16};
 
 use crate::{flag_effect, flag_effects};
 
