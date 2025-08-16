@@ -1,6 +1,7 @@
 /// This module contains the main [`GameBoy`] emulator structure and its components.
 use camino::Utf8PathBuf;
 
+mod address;
 mod cpu;
 mod decoder;
 mod instruction;
