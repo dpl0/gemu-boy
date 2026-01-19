@@ -1,6 +1,7 @@
 //! Definition of the registers of the CPU.
 
-use super::{decoder, ram::Memory};
+use super::decoder::Decoder;
+use super::ram::Memory;
 
 /// Represents all flags as they'll be set by executing operations from the cpu.
 /// These are actually the higher bits of the AF register!
@@ -63,7 +64,7 @@ impl Default for RegisterFile {
 #[derive(Default, Debug)]
 pub struct Cpu {
     pub registers: RegisterFile,
-    pub decoder: decoder::Decoder,
+    pub decoder: Decoder,
 }
 
 impl Cpu {
@@ -72,7 +73,7 @@ impl Cpu {
     }
 
     pub fn tick(&mut self, ram: &Memory) -> anyhow::Result<()> {
-        let instruction = self.decoder.fetch_instruction(ram, self.registers.pc)?;
+        let instruction = Decoder::fetch_instruction(ram, self.registers.pc)?;
 
         // Increment the program counter
         let (pc_incremented, overflow) = self
