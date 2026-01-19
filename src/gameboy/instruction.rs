@@ -32,36 +32,45 @@ pub enum Mnemonic {
 ///  - '1': Set
 ///  - '0': Clear
 ///  - '-': No effect
-///  - '?': Compute
+///  - 'Z|N|H|C': Compute
 #[macro_export]
 macro_rules! flag_effects {
     ($z:tt $n:tt $h:tt $c:tt) => {
         FlagEffects {
-            z: flag_effect!($z),
-            n: flag_effect!($n),
-            h: flag_effect!($h),
-            c: flag_effect!($c),
+            z: flag_effect!(z, $z),
+            n: flag_effect!(n, $n),
+            h: flag_effect!(h, $h),
+            c: flag_effect!(c, $c),
         }
     };
 }
 
-/// Transform a single flag effect into a [`FlagEffect`] enum.
+/// Transform a single flag effect into a [`FlagEffect`] enum member.
 #[macro_export]
 macro_rules! flag_effect {
-    (1) => {
+    ($ignored:tt, 1) => {
         FlagEffect::Set
     };
-    (0) => {
+    ($ignored:tt, 0) => {
         FlagEffect::Clear
     };
-    (-) => {
+    ($ignored:tt, -) => {
         FlagEffect::NoEffect
     };
-    (?) => {
+    (z, Z) => {
         FlagEffect::Compute
     };
-    ($x:tt) => {
-        compile_error!("Invalid flag effect (only 1, 0, -, or ?, can be used!")
+    (n, N) => {
+        FlagEffect::Compute
+    };
+    (h, H) => {
+        FlagEffect::Compute
+    };
+    (c, C) => {
+        FlagEffect::Compute
+    };
+    ($ignored:tt, $x:tt) => {
+        compile_error!("Invalid flag effect (only 1, 0, -, or [Z | N | H | C], can be used!")
     };
 }
 
@@ -85,4 +94,33 @@ pub enum FlagEffect {
     NoEffect,
     /// The flag will be set depending on the instruction execution.
     Compute,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn flag_effect_macro() {
+        assert!(matches!(flag_effect!(-, -), FlagEffect::NoEffect));
+        assert!(matches!(flag_effect!(-, 0), FlagEffect::Clear));
+        assert!(matches!(flag_effect!(-, 1), FlagEffect::Set));
+        assert!(matches!(flag_effect!(z, Z), FlagEffect::Compute));
+        assert!(matches!(flag_effect!(n, N), FlagEffect::Compute));
+        assert!(matches!(flag_effect!(h, H), FlagEffect::Compute));
+        assert!(matches!(flag_effect!(c, C), FlagEffect::Compute));
+    }
+
+    #[test]
+    fn test_flag_effects_mixed() {
+        assert!(matches!(
+            flag_effects!(Z 0 1 -),
+            FlagEffects {
+                z: FlagEffect::Compute,
+                n: FlagEffect::Clear,
+                h: FlagEffect::Set,
+                c: FlagEffect::NoEffect,
+            },
+        ));
+    }
 }
