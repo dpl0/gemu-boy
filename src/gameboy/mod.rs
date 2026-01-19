@@ -16,7 +16,7 @@ pub struct GameBoy {
     pub cpu: cpu::Cpu,
     pub ram: ram::Memory,
     pub screen: screen::Screen,
-    pub ticks: u64,
+    pub elapsed_ticks: u64,
 }
 
 impl GameBoy {
@@ -29,7 +29,7 @@ impl GameBoy {
             cpu: cpu::Cpu::new(),
             ram: ram::Memory::new_with_rom(&rom),
             screen: screen::Screen::new(),
-            ticks: 0,
+            elapsed_ticks: 0,
         })
     }
 
@@ -48,7 +48,7 @@ impl GameBoy {
             // Update the screen with the current state of the RAM.
             self.screen.update(&self.ram);
 
-            self.ticks += 1;
+            self.elapsed_ticks += 1;
 
             // TODO: Handle input, timing, and break condition if needed.
         }
