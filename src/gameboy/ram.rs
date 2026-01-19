@@ -21,6 +21,7 @@
 ///  Accesses to E000-FDFF go to C000-DDFF.
 use std::fmt;
 
+use crate::gameboy::address::Address;
 use crate::gameboy::rom::Rom;
 
 /// Represents the size of the memory in bytes.
@@ -68,7 +69,7 @@ impl Memory {
     }
 
     /// Reads a byte from the memory at the specified location.
-    pub fn read_byte(&self, location: u16) -> u8 {
+    pub fn read_byte(&self, location: Address) -> u8 {
         self.ram[Self::physical_address(location)]
     }
 
@@ -76,10 +77,10 @@ impl Memory {
     /// Mostly used for writing ROM data.
     ///
     /// Writes that target both the mirroring (E000-FDFF) and non-mirroring ranges will fail.
-    pub fn write_slice(&mut self, location: u16, data: &[u8]) -> Result<usize, MemAccessError> {
+    pub fn write_slice(&mut self, location: Address, data: &[u8]) -> Result<usize, MemAccessError> {
         let location = location as usize;
 
-        let Some(end) = location.checked_add(data.len()) else {
+        let Some(end) = location.as_u16().checked_add(data.len()) else {
             return Err(MemAccessError::SliceEndOutOfBounds);
         };
         let end = end.min(MEMORY_SIZE);

@@ -2,6 +2,7 @@
 
 use bitmatch::bitmatch;
 
+use super::super::address::Address;
 use super::super::instruction::{FlagEffect, FlagEffects, Instruction, Mnemonic};
 use super::operand::{Operand, Reg16};
 
@@ -20,7 +21,7 @@ impl Decoder {
     /// Fetches the instruction at the given program counter (PC) address from the RAM.
     pub fn fetch_instruction(
         ram: &crate::gameboy::ram::Memory,
-        pc: u16,
+        pc: Address,
     ) -> anyhow::Result<Instruction> {
         let first_byte = ram.read_byte(pc);
         let second_byte = ram.read_byte(pc + 1);
